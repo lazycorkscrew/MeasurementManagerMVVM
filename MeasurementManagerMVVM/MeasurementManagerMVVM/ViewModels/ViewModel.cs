@@ -24,6 +24,7 @@ namespace MeasurementManagerMVVM.ViewModels
             set { SetValue(FilterTextProperty, value); }
         }
 
+        //Не готово. Позже закончить
         public static readonly DependencyProperty FilterTextProperty =
             DependencyProperty.Register("FilterText", typeof(string), typeof(ViewModel), new PropertyMetadata(""));
 

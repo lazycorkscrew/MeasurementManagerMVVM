@@ -15,12 +15,12 @@ namespace MeasurementManagerMVVM.Models
         public string Lname { get; set; }
         public string Fname { get; set; }
         public string Patronymic { get; set; }
-        public Address address { get; set; }
+        public Address ClientAddress { get; set; }
         public string AddressString
         {
             get
             {
-                return address.ToString();
+                return ClientAddress.ToString();
             }
         }
         public string Phone { get; set; }
@@ -33,12 +33,13 @@ namespace MeasurementManagerMVVM.Models
             {
                 Measuring[] result = new Measuring[]
                 {
-                    new Measuring { Number = "000001", Lname = "Брошкина", Fname = "Наталья", Patronymic = "Викторовна", address = new Address("Москва;ул;Пушкина;4;7"), Phone = "88005553535", Requested = DateTime.Parse("17.06.2020"), Completed = DateTime.Now },
-                    new Measuring { Number = "000002", Lname = "Колотилов", Fname = "Пётр", Patronymic = "Иванович", address = new Address("Саратов;ул;Лебедева-Кумача;70;23"), Phone = "88006008000", Requested = DateTime.Parse("17.06.2020"), Completed = DateTime.Now }
+                    new Measuring { Number = "000001", Lname = "Брошкина", Fname = "Наталья", Patronymic = "Викторовна", ClientAddress = new Address("Москва;ул;Пушкина;4;7"), Phone = "88005553535", Requested = DateTime.Parse("17.06.2020"), Completed = DateTime.Now },
+                    new Measuring { Number = "000002", Lname = "Колотилов", Fname = "Пётр", Patronymic = "Иванович", ClientAddress = new Address("Саратов;ул;Лебедева-Кумача;70;23"), Phone = "88006008000", Requested = DateTime.Parse("17.06.2020"), Completed = DateTime.Now }
                 };
 
                 return result;
             }
+            //try-catch Нужен для отладки, смотреть, какое исключение мешает данным выгрузиться. Позже удалить
             catch(Exception ex)
             {
                 return null;
