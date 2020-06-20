@@ -63,8 +63,12 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Models\Appointment.cs" />
+    <Compile Include="Models\HourInterval.cs" />
+    <Compile Include="Models\IntervalLimit.cs" />
     <Compile Include="Models\Address.cs" />
-    <Compile Include="Models\Measuring.cs" />
+    <Compile Include="Models\TownDateLimits.cs" />
+    <Compile Include="Models\MeasuringRequest.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

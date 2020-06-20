@@ -15,7 +15,7 @@ namespace MeasurementManagerMVVM.ViewModels
     {
         public ViewModel()
         {
-            Items = CollectionViewSource.GetDefaultView(Measuring.GetMeasurings());
+            Items = CollectionViewSource.GetDefaultView(MeasuringRequest.GetMeasurings());
         }
 
         public string FilterText
@@ -28,9 +28,9 @@ namespace MeasurementManagerMVVM.ViewModels
         public static readonly DependencyProperty FilterTextProperty =
             DependencyProperty.Register("FilterText", typeof(string), typeof(ViewModel), new PropertyMetadata(""));
 
-        public Measuring SelectedItem
+        public MeasuringRequest SelectedItem
         {
-            get { return (Measuring)GetValue(SelectedItemProperty); }
+            get { return (MeasuringRequest)GetValue(SelectedItemProperty); }
             set 
             { 
                 SetValue(SelectedItemProperty, value);
@@ -39,7 +39,7 @@ namespace MeasurementManagerMVVM.ViewModels
         }
 
         public static readonly DependencyProperty SelectedItemProperty =
-            DependencyProperty.Register("SelectedItem", typeof(Measuring), typeof(Measuring), new PropertyMetadata(null));
+            DependencyProperty.Register("SelectedItem", typeof(MeasuringRequest), typeof(MeasuringRequest), new PropertyMetadata(null));
 
         public string GetSelectedItemString
         {
@@ -47,7 +47,7 @@ namespace MeasurementManagerMVVM.ViewModels
         }
 
         public static readonly DependencyProperty GetSelectedItemStringProperty =
-            DependencyProperty.Register("GetSelectedItemString", typeof(string), typeof(Measuring), new PropertyMetadata(""));
+            DependencyProperty.Register("GetSelectedItemString", typeof(string), typeof(MeasuringRequest), new PropertyMetadata(""));
 
         public ICollectionView Items
         {

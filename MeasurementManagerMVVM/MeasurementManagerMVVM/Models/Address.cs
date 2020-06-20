@@ -24,7 +24,7 @@ namespace MeasurementManagerMVVM.Models
                 House = parts[3];
                 Kv = parts[4];
             }
-            else throw new InvalidDataException("Адрес вносится текстовой строкой в формате \"Город;ТипУлицы;Улица;Дом;Квартира\"");
+            else throw new InvalidDataException("Адрес должнен вноситься текстовой строкой в формате \"Город;ТипУлицы;Улица;Дом;Квартира\"");
         }
         public string Town { get; set; }
         public string Street { get; set; }
