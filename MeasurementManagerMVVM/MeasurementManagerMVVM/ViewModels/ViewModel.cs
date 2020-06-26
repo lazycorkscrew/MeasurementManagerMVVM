@@ -15,7 +15,9 @@ namespace MeasurementManagerMVVM.ViewModels
     {
         public ViewModel()
         {
-            Items = CollectionViewSource.GetDefaultView(MeasuringRequest.GetMeasurings());
+            
+            TownDateLimitsCollection = CollectionViewSource.GetDefaultView(TownDateLimits.GetTestLimits());
+            //Items = CollectionViewSource.GetDefaultView(MeasuringRequest.GetMeasurings());
         }
 
         public string FilterText
@@ -60,6 +62,18 @@ namespace MeasurementManagerMVVM.ViewModels
 
         public static readonly DependencyProperty ItemsProperty =
             DependencyProperty.Register("Items", typeof(ICollectionView), typeof(ViewModel), new PropertyMetadata(null));
+
+        public ICollectionView TownDateLimitsCollection
+        {
+            get { return (ICollectionView)GetValue(TownDateLimitsProperty); }
+            set
+            {
+                SetValue(TownDateLimitsProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty TownDateLimitsProperty =
+            DependencyProperty.Register("TownDateLimitsCollection", typeof(ICollectionView), typeof(ViewModel), new PropertyMetadata(null));
 
         public event PropertyChangedEventHandler PropertyChanged;
 

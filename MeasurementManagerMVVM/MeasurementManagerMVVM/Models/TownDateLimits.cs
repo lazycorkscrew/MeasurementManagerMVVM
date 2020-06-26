@@ -3,21 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace MeasurementManagerMVVM.Models
 {
     /// <summary>
     /// Класс, характеризующий лимиты замеров для определенного региона в определённую дату
     /// </summary>
-    class TownDateLimits
+    class TownDateLimits: DependencyObject
     {
         public string Town { get; set; }
         public DateTime Date { get; set; }
+
+        private List<IntervalLimit> _limits;
         public List<IntervalLimit> Limits 
         { 
             get
             {
-                return Limits;
+                return _limits;
             }
             set
             {
@@ -28,6 +31,24 @@ namespace MeasurementManagerMVVM.Models
             }
         }
 
+        public static IEnumerable<TownDateLimits> GetTestLimits()
+        {
+            List<TownDateLimits> tdLimits = new List<TownDateLimits>();
+            List<IntervalLimit> intervalLimits = new List<IntervalLimit>();
+
+            intervalLimits.AddRange(new IntervalLimit[]
+                {
+                    new IntervalLimit(10, 12, 3),
+                    new IntervalLimit(12, 14, 4),
+                    new IntervalLimit(14, 15, 5),
+                    new IntervalLimit(15, 16, 6)
+                });
+
+            tdLimits.Add( new TownDateLimits("Саратов", DateTime.Now, intervalLimits));
+
+            return tdLimits;
+        }
+
         public TownDateLimits(string town, DateTime date, IEnumerable<IntervalLimit> limits)
         {
             Town = town;
@@ -35,18 +56,25 @@ namespace MeasurementManagerMVVM.Models
             Limits = limits as List<IntervalLimit>;
         }
 
-        public void AddLimit(IntervalLimit limit)
+        public void AddLimit(IntervalLimit newLimit)
         {
-            if(Limits.Any())
+            if(_limits == null)
             {
-                
-                if(Limits.Last().Interval.HourEnd > limit.Interval.HourBegin)
+                _limits = new List<IntervalLimit>();
+            }
+
+            if (_limits.Any())
+            {
+                foreach(IntervalLimit limit in _limits)
                 {
-                    throw new ArgumentException("Временные интервалы не должны пересекаться.");
+                    if( (newLimit.Interval.HourEnd > limit.Interval.HourBegin) && (newLimit.Interval.HourBegin < limit.Interval.HourEnd))
+                    {
+                        throw new ArgumentException("Временные интервалы не должны пересекаться.");
+                    }
                 }
             }
 
-            Limits.Add(limit);
+            _limits.Add(newLimit);
         }
     }
 }

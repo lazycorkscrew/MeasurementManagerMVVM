@@ -12,11 +12,18 @@
             <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+
         <StackPanel Orientation="Horizontal">
             <TextBlock Text="Фильтр: " Margin="5"/>
             <TextBox Text="{Binding FilterText}" Width="200" Margin="5"/>
         </StackPanel>
-        <DataGrid Grid.Row="1" Margin="5,5,222,5" ItemsSource="{Binding Items}" AutoGenerateColumns="False" IsReadOnly="True" SelectedItem="{Binding SelectedItem}">
+        <DataGrid Grid.Row="1" Margin="5,5,85,5" ItemsSource="{Binding Items}" AutoGenerateColumns="False" IsReadOnly="True" SelectedItem="{Binding SelectedItem}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Number}"/>
                 <DataGridTextColumn Header="Фамилия" Binding="{Binding Lname}"/>
@@ -26,7 +33,12 @@
                 <DataGridTextColumn Header="Дата заявки" Binding="{Binding Requested}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <TextBlock Text="{Binding GetSelectedItemString, UpdateSourceTrigger=PropertyChanged}" Margin="5" Width="200"/>
-        <Calendar HorizontalAlignment="Left" Margin="575,10,0,0" VerticalAlignment="Top" Grid.Row="1" SelectionMode="MultipleRange"/>
+        <TextBlock Text="{Binding GetSelectedItemString, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2" Grid.Column="1"/>
+        <Calendar x:Name="monthCalendar1" HorizontalAlignment="Left"  VerticalAlignment="Top" Grid.Row="1" SelectionMode="SingleDate" IsManipulationEnabled="True" Grid.Column="1"/>
+
+        <DataGrid Grid.Row="1" Grid.Column="2">
+            <DataGridTextColumn Header="Город: " Binding="{Binding Town}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="Дата замеров: " Binding="{Binding Date}" IsReadOnly="True"/>
+        </DataGrid>
     </Grid>
 </Window>
