@@ -9,8 +9,13 @@ using System.Windows;
 
 namespace MeasurementManagerMVVM.Models
 {
-    class MeasuringRequest : DependencyObject
+    class MeasuringRequest : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
         public string Number { get; set; }
         public string Lname { get; set; }
         public string Fname { get; set; }

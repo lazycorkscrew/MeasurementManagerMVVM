@@ -1,6 +1,7 @@
 ﻿using MeasurementManagerMVVM.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -8,78 +9,87 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Linq;
 
 namespace MeasurementManagerMVVM.ViewModels
 {
-    class ViewModel : DependencyObject, INotifyPropertyChanged
+    class ViewModel : INotifyPropertyChanged
     {
         public ViewModel()
         {
-            
-            TownDateLimitsCollection = CollectionViewSource.GetDefaultView(TownDateLimits.GetTestLimits());
-            //Items = CollectionViewSource.GetDefaultView(MeasuringRequest.GetMeasurings());
+            TownDateLimitsCollection = new ObservableCollection<TownDateLimits>(TownDateLimits.GetTestLimits());
+            MeasuringRequestsCollection = new ObservableCollection<MeasuringRequest>(MeasuringRequest.GetMeasurings());
         }
 
-        public string FilterText
-        {
-            get { return (string)GetValue(FilterTextProperty); }
-            set { SetValue(FilterTextProperty, value); }
-        }
-
-        //Не готово. Позже закончить
-        public static readonly DependencyProperty FilterTextProperty =
-            DependencyProperty.Register("FilterText", typeof(string), typeof(ViewModel), new PropertyMetadata(""));
-
-        public MeasuringRequest SelectedItem
-        {
-            get { return (MeasuringRequest)GetValue(SelectedItemProperty); }
-            set 
-            { 
-                SetValue(SelectedItemProperty, value);
-                OnPropertyChanged("GetSelectedItemString");
-            }
-        }
-
-        public static readonly DependencyProperty SelectedItemProperty =
-            DependencyProperty.Register("SelectedItem", typeof(MeasuringRequest), typeof(MeasuringRequest), new PropertyMetadata(null));
-
-        public string GetSelectedItemString
-        {
-            get {return SelectedItem?.Number ?? "(Заказ не выбран)"; }
-        }
-
-        public static readonly DependencyProperty GetSelectedItemStringProperty =
-            DependencyProperty.Register("GetSelectedItemString", typeof(string), typeof(MeasuringRequest), new PropertyMetadata(""));
-
-        public ICollectionView Items
-        {
-            get { return (ICollectionView)GetValue(ItemsProperty); }
-            set 
-            { 
-                SetValue(ItemsProperty, value);
-            }
-        }
-
-        public static readonly DependencyProperty ItemsProperty =
-            DependencyProperty.Register("Items", typeof(ICollectionView), typeof(ViewModel), new PropertyMetadata(null));
-
-        public ICollectionView TownDateLimitsCollection
-        {
-            get { return (ICollectionView)GetValue(TownDateLimitsProperty); }
-            set
-            {
-                SetValue(TownDateLimitsProperty, value);
-            }
-        }
-
-        public static readonly DependencyProperty TownDateLimitsProperty =
-            DependencyProperty.Register("TownDateLimitsCollection", typeof(ICollectionView), typeof(ViewModel), new PropertyMetadata(null));
-
+        #region события
         public event PropertyChangedEventHandler PropertyChanged;
-
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+        #endregion
+
+        private ObservableCollection<TownDateLimits> _townDateLimitsCollection;
+
+
+        public ObservableCollection<TownDateLimits> TownDateLimitsCollection 
+        {
+            get
+            {
+                return _townDateLimitsCollection;
+            }
+            set
+            {
+                _townDateLimitsCollection = value;
+                OnPropertyChanged("TownDateLimitsCollection");
+            }
+        }
+
+        public ObservableCollection<IntervalLimit> SelectedTownDateLimitsCollection
+        {
+            get
+            {
+                TownDateLimits townDateLimit = (from tdl in _townDateLimitsCollection.ToArray() 
+                    where tdl.Date.Date == SelectedDate.Date &&
+                    tdl.Town == SelectedMeasuring?.ClientAddress.Town
+                    select tdl).FirstOrDefault();
+
+                try
+                {
+                    return new ObservableCollection<IntervalLimit>(from l in townDateLimit?.Limits select l);
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+        }
+
+        public ObservableCollection<MeasuringRequest> MeasuringRequestsCollection { get; set; }
+
+        
+
+        private DateTime _selectedDate;
+        public DateTime SelectedDate
+        {
+            get { return _selectedDate; } 
+            set  
+            { 
+                _selectedDate = value;
+                OnPropertyChanged("SelectedTownDateLimitsCollection"); 
+            }
+        }
+
+        private MeasuringRequest _selectedMeasuring;
+        public MeasuringRequest SelectedMeasuring
+        {
+            get { return _selectedMeasuring; }
+            set 
+            { 
+                _selectedMeasuring = value; 
+                OnPropertyChanged("SelectedMeasuring"); 
+                OnPropertyChanged("SelectedTownDateLimitsCollection"); 
+            }
         }
     }
 }

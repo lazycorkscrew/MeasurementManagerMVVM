@@ -41,6 +41,13 @@ namespace MeasurementManagerMVVM.Models
             MeasurementsLimit = limit;
         }
 
+        public string ViewString
+        {
+            get
+            {
+                return $"{Interval.HourBegin}-{Interval.HourEnd}, замеров доступно: {MeasurementsLimit}";
+            }
+        }
         
     }
 }
