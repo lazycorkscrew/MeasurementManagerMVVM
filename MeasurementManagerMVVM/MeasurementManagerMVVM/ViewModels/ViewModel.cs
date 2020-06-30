@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
-using System.Linq;
 
 namespace MeasurementManagerMVVM.ViewModels
 {
@@ -22,11 +21,32 @@ namespace MeasurementManagerMVVM.ViewModels
         }
 
         #region события
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
+            public event PropertyChangedEventHandler PropertyChanged;
+            public void OnPropertyChanged([CallerMemberName] string prop = "")
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+            }
+        #endregion
+
+        #region Кнопки
+
+        private RelayCommand addCommand;
+        public RelayCommand AddCommand => addCommand ?? (addCommand = new RelayCommand(obj =>
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
+            if(SelectedMeasuring.Appointed == null)
+            {
+                SelectedMeasuring.Appointed = SelectedDate;
+                SelectedTownDateLimit.MeasurementsLimit--;
+                SelectedMeasuring.Fname = "qwerty";
+                OnPropertyChanged("SelectedTownDateLimitsCollection");
+                OnPropertyChanged("TownDateLimitsCollection");
+            }
+            else
+            {
+                MessageBox.Show("Неее, Низя!");
+            }
+        }));
+
         #endregion
 
         private ObservableCollection<TownDateLimits> _townDateLimitsCollection;
@@ -44,6 +64,8 @@ namespace MeasurementManagerMVVM.ViewModels
                 OnPropertyChanged("TownDateLimitsCollection");
             }
         }
+
+        public IntervalLimit SelectedTownDateLimit { get; set; }
 
         public ObservableCollection<IntervalLimit> SelectedTownDateLimitsCollection
         {
@@ -67,8 +89,6 @@ namespace MeasurementManagerMVVM.ViewModels
 
         public ObservableCollection<MeasuringRequest> MeasuringRequestsCollection { get; set; }
 
-        
-
         private DateTime _selectedDate;
         public DateTime SelectedDate
         {
@@ -85,7 +105,7 @@ namespace MeasurementManagerMVVM.ViewModels
         {
             get { return _selectedMeasuring; }
             set 
-            { 
+            {
                 _selectedMeasuring = value; 
                 OnPropertyChanged("SelectedMeasuring"); 
                 OnPropertyChanged("SelectedTownDateLimitsCollection"); 

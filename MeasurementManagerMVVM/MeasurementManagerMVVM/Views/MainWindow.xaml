@@ -7,7 +7,7 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="MeasurementManagerMVVM.MainWindow"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="1031.164">
-    <Grid>
+    <Grid RenderTransformOrigin="0.383,0.481">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition/>
@@ -23,7 +23,16 @@
             <TextBlock Text="Фильтр: " Margin="5"/>
             <TextBox Text="Binding FilterText" Width="200" Margin="5"/>
         </StackPanel>
-        <DataGrid Grid.Row="1" Margin="5,5,85,5" ItemsSource="{Binding MeasuringRequestsCollection}" SelectedItem="{Binding SelectedMeasuring}" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid Grid.Row="1" Margin="5,5,10,5" ItemsSource="{Binding MeasuringRequestsCollection, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedMeasuring}" AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Appointed}" Value="{x:Null}" >
+                            <Setter Property="Background" Value="White" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Number}"/>
                 <DataGridTextColumn Header="Фамилия" Binding="{Binding Lname}"/>
@@ -35,8 +44,21 @@
         </DataGrid>
         <TextBlock Text="{Binding GetSelectedItemString}" Grid.ColumnSpan="2" Grid.Column="1"/>
         <Calendar x:Name="monthCalendar1" SelectedDate="{Binding SelectedDate}" HorizontalAlignment="Left"  VerticalAlignment="Top" Grid.Row="1" SelectionMode="SingleDate" IsManipulationEnabled="True" Grid.Column="1"/>
-
-        <DataGrid Grid.Row="1" Grid.Column="2" ItemsSource="{Binding SelectedTownDateLimitsCollection}" AutoGenerateColumns="False" IsReadOnly="True">
+        <Button Command="{Binding AddCommand}" Margin="0,168,0,188" Grid.Row="1" Grid.Column="1">Назначить
+        </Button>
+        <DataGrid Grid.Row="1" Grid.Column="2" 
+                  SelectedItem="{Binding SelectedTownDateLimit}" 
+                  ItemsSource="{Binding SelectedTownDateLimitsCollection, UpdateSourceTrigger=PropertyChanged}" 
+                  AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding MeasurementsLimit}" Value="0" >
+                            <Setter Property="Background" Value="#FFFF8282" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Город: " Binding="{Binding ViewString}" IsReadOnly="True"/>
             </DataGrid.Columns>

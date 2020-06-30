@@ -37,6 +37,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Web.Mobile" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -64,6 +65,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\Appointment.cs" />
+    <Compile Include="Models\RelayCommand.cs" />
     <Compile Include="Models\HourInterval.cs" />
     <Compile Include="Models\IntervalLimit.cs" />
     <Compile Include="Models\Address.cs" />
