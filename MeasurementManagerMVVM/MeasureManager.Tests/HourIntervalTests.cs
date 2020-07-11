@@ -1,6 +1,6 @@
 ﻿using System;
 using MeasurementManagerMVVM.Models;
-using ut =Microsoft.VisualStudio.TestTools.UnitTesting;
+//using ut =Microsoft.VisualStudio.TestTools.UnitTesting;
 using NUnit.Framework;
 using NUnit.Framework.Internal.Commands;
 
@@ -9,13 +9,12 @@ namespace MeasureManager.Tests
     [TestFixture]
     public class HourIntervalTests
     {
-        [ut.ExpectedException(typeof(ArgumentException))]
         public void TestMethod(int a, int b)
         {
             HourInterval hi = new HourInterval(a, b);
         }
 
-        [Test, Category("pass")]
+        [Test]
         [TestCase(0, 23)]
         [TestCase(2, 2)]
         [TestCase(2, 1)]
@@ -23,8 +22,7 @@ namespace MeasureManager.Tests
         [TestCase(23, 23)]
         public void CreateCorrectIntervals(int a, int b)
         {
-
-            //Assert.DoesNotThrow(TestMethod(a, b));
+            Assert.DoesNotThrow(() => { HourInterval hi = new HourInterval(a, b); });
         }
         
     }

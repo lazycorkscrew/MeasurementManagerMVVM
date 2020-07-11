@@ -30,20 +30,35 @@ namespace MeasurementManagerMVVM.ViewModels
 
         #region Кнопки
 
+        public bool IsAddCommandEnabled
+        {
+            get
+            {
+                return SelectedDate!= null & SelectedMeasuring!= null & SelectedTownDateLimit != null;
+            }
+        }
+
+        public bool IsCalendarEnabled
+        {
+            get
+            {
+                return SelectedMeasuring != null;
+            }
+        }
+
         private RelayCommand addCommand;
         public RelayCommand AddCommand => addCommand ?? (addCommand = new RelayCommand(obj =>
         {
             if(SelectedMeasuring.Appointed == null)
             {
-                SelectedMeasuring.Appointed = SelectedDate;
+                SelectedMeasuring.Appointed = SelectedDate.AddHours(SelectedTownDateLimit.Interval.HourBegin);
                 SelectedTownDateLimit.MeasurementsLimit--;
-                SelectedMeasuring.Fname = "qwerty";
                 OnPropertyChanged("SelectedTownDateLimitsCollection");
                 OnPropertyChanged("TownDateLimitsCollection");
             }
             else
             {
-                MessageBox.Show("Неее, Низя!");
+                MessageBox.Show("Для данного заказа уже назначена дата и время.");
             }
         }));
 
@@ -65,7 +80,19 @@ namespace MeasurementManagerMVVM.ViewModels
             }
         }
 
-        public IntervalLimit SelectedTownDateLimit { get; set; }
+        private IntervalLimit _selectedTownDateLimit;
+        public IntervalLimit SelectedTownDateLimit 
+        { 
+            get
+            {
+                return _selectedTownDateLimit;
+            }
+            set
+            {
+                _selectedTownDateLimit = value;
+                OnPropertyChanged("IsAddCommandEnabled");
+            }
+        }
 
         public ObservableCollection<IntervalLimit> SelectedTownDateLimitsCollection
         {
@@ -97,6 +124,7 @@ namespace MeasurementManagerMVVM.ViewModels
             { 
                 _selectedDate = value;
                 OnPropertyChanged("SelectedTownDateLimitsCollection"); 
+                
             }
         }
 
@@ -108,7 +136,8 @@ namespace MeasurementManagerMVVM.ViewModels
             {
                 _selectedMeasuring = value; 
                 OnPropertyChanged("SelectedMeasuring"); 
-                OnPropertyChanged("SelectedTownDateLimitsCollection"); 
+                OnPropertyChanged("SelectedTownDateLimitsCollection");
+                OnPropertyChanged("IsCalendarEnabled");
             }
         }
     }

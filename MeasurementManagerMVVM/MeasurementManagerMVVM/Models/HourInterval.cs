@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace MeasurementManagerMVVM.Models
 {
     /// <summary>
-    /// Класс, характеризующий почасовой временной интервал
+    /// Класс, характеризующий почасовой временной интервал от 0 до 24 часов (24 час считается, как 23:59, т.е. без переноса на следующий день)
     /// </summary>
     public class HourInterval
     {
@@ -29,12 +29,12 @@ namespace MeasurementManagerMVVM.Models
         public HourInterval()
         {
             HourBegin = 0;
-            HourEnd = 23;
+            HourEnd = 24;
         }
 
         public HourInterval(int hourBegin, int hourEnd)
         {
-            if (hourBegin > hourEnd)
+            if (hourBegin >= hourEnd)
             {
                 throw new ArgumentException("hourBegin не может быть больше, чем hourEnd.");
             }
@@ -50,9 +50,9 @@ namespace MeasurementManagerMVVM.Models
                 throw new ArgumentException($"Поле {fieldName} не может быть равным 0.");
             }
 
-            if (inValue < 0 || inValue > 23)
+            if (inValue < 0 || inValue > 24)
             {
-                throw new ArgumentException($"Поле {fieldName} должно быть в диапазоне от 0 до 23.");
+                throw new ArgumentException($"Поле {fieldName} должно быть в диапазоне от 0 до 24.");
             }
 
             return inValue;

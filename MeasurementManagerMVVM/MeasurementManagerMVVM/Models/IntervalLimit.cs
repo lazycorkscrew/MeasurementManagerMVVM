@@ -15,6 +15,8 @@ namespace MeasurementManagerMVVM.Models
 
         public HourInterval Interval { get; set; }
 
+        public string HourBeginEnd { get { return $"{Interval.HourBegin}-{Interval.HourEnd}"; }}
+
         public int MeasurementsLimit 
         { 
             get { return _measurementsLimit; }
