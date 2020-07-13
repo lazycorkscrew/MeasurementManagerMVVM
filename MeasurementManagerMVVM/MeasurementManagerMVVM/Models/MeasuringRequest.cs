@@ -11,7 +11,7 @@ using System.Windows.Media;
 
 namespace MeasurementManagerMVVM.Models
 {
-    class MeasuringRequest : INotifyPropertyChanged
+    public class MeasuringRequest : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -36,6 +36,9 @@ namespace MeasurementManagerMVVM.Models
 
         public Appointment MeasuringAppointment { get; set; }
 
+        private IntervalLimit _appoinedInterval;
+        
+
         private DateTime? _appointment;
         public DateTime? Appointed 
         {
@@ -49,8 +52,22 @@ namespace MeasurementManagerMVVM.Models
                 OnPropertyChanged("Appointed");
             }
         } //Дата назначения даты и временного интервала замера
-        
-        public static MeasuringRequest[] GetMeasurings()
+
+        public void Appoint(DateTime? appointed, IntervalLimit intervalLimit) //Назначение даты и времени заказа
+        {
+            Appointed = appointed;
+            _appoinedInterval = intervalLimit;
+            intervalLimit.MeasurementsLimit--;
+        }
+
+        public void CancelAppoint() //Отмена назначения
+        {
+            Appointed = null;
+            _appoinedInterval.MeasurementsLimit++;
+            _appoinedInterval = null;
+        }
+
+        public static MeasuringRequest[] GetMeasurings() //Статический метод получения примеров данных
         {
             try
             {

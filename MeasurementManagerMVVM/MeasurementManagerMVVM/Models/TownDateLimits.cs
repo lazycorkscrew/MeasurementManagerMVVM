@@ -12,7 +12,7 @@ namespace MeasurementManagerMVVM.Models
     /// <summary>
     /// Класс, характеризующий лимиты замеров для определенного региона в определённую дату
     /// </summary>
-    class TownDateLimits: INotifyPropertyChanged
+    public class TownDateLimits: INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -42,7 +42,7 @@ namespace MeasurementManagerMVVM.Models
 
         public int LimitsCount { get { return _limits.Count; } }
 
-        public static IEnumerable<TownDateLimits> GetTestLimits()
+        public static IEnumerable<TownDateLimits> GetTestLimits() //Статический метод получения примеров лимитов замеров по городам
         {
             return new List<TownDateLimits>
             {
@@ -56,7 +56,7 @@ namespace MeasurementManagerMVVM.Models
 
                 new TownDateLimits("Москва", DateTime.Now, new List<IntervalLimit>
                 {
-                    new IntervalLimit(8, 10, 3),
+                    new IntervalLimit(8, 10, 1),
                     new IntervalLimit(10, 12, 5),
                     new IntervalLimit(12, 14, 6),
                     new IntervalLimit(14, 15, 4),

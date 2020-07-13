@@ -22,9 +22,15 @@
 
         <StackPanel Orientation="Horizontal">
             <TextBlock Text="Фильтр: " Margin="5"/>
-            <TextBox Text="Binding FilterText" Width="200" Margin="5"/>
+            <TextBox Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="5"/>
         </StackPanel>
-        <DataGrid Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding MeasuringRequestsCollection, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedMeasuring}" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding CurrentMeasuringRequestsCollection, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedMeasuring}" AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Command="{Binding CancelCommand}" IsEnabled="{Binding IsCancelCommandEnabled, UpdateSourceTrigger=PropertyChanged}" Header="Отменить дату назначения"></MenuItem>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Дата назначения" Binding="{Binding Appointed, StringFormat=dd:MM:yyyy-HH:mm}"/>
                 <DataGridTextColumn Header="Фамилия" Binding="{Binding Lname}"/>
@@ -43,6 +49,11 @@
                   SelectedItem="{Binding SelectedTownDateLimit}" 
                   ItemsSource="{Binding SelectedTownDateLimitsCollection, UpdateSourceTrigger=PropertyChanged}" 
                   AutoGenerateColumns="False" SelectionMode="Single" IsReadOnly="True">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Command="{Binding AddCommand}" IsEnabled="{Binding IsAddCommandEnabled, UpdateSourceTrigger=PropertyChanged}" Header="Назначить"></MenuItem>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Время замера" Binding="{Binding HourBeginEnd}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Замеров доступно" Binding="{Binding MeasurementsLimit}" IsReadOnly="True"/>

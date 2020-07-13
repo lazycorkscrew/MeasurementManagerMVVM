@@ -18,6 +18,7 @@ namespace MeasurementManagerMVVM.ViewModels
         {
             TownDateLimitsCollection = new ObservableCollection<TownDateLimits>(TownDateLimits.GetTestLimits());
             MeasuringRequestsCollection = new ObservableCollection<MeasuringRequest>(MeasuringRequest.GetMeasurings());
+            CurrentMeasuringRequestsCollection = MeasuringRequestsCollection;
         }
 
         #region события
@@ -30,15 +31,15 @@ namespace MeasurementManagerMVVM.ViewModels
 
         #region Кнопки
 
-        public bool IsAddCommandEnabled
+        public bool IsAddCommandEnabled //Можно ли назначить замер на текущую дату и время для текущего заказа
         {
             get
             {
-                return SelectedDate!= null & SelectedMeasuring!= null & SelectedTownDateLimit != null;
+                return SelectedDate!= null & SelectedMeasuring!= null & SelectedTownDateLimit != null & SelectedTownDateLimit?.MeasurementsLimit>0;
             }
         }
 
-        public bool IsCalendarEnabled
+        public bool IsCalendarEnabled //Нужно ли включать календарь
         {
             get
             {
@@ -46,19 +47,62 @@ namespace MeasurementManagerMVVM.ViewModels
             }
         }
 
+        public bool IsCancelCommandEnabled ////Можно ли отменить замер для текущего заказа
+        {
+            get
+            {
+                return SelectedMeasuring?.Appointed != null;
+            }
+        }
+
         private RelayCommand addCommand;
         public RelayCommand AddCommand => addCommand ?? (addCommand = new RelayCommand(obj =>
         {
+            if(SelectedMeasuring == null)
+            {
+                MessageBox.Show("Заказ для замера не выделен.","Внимание");
+                return;
+            }
+
             if(SelectedMeasuring.Appointed == null)
             {
-                SelectedMeasuring.Appointed = SelectedDate.AddHours(SelectedTownDateLimit.Interval.HourBegin);
-                SelectedTownDateLimit.MeasurementsLimit--;
+                SelectedMeasuring.Appoint(SelectedDate.AddHours(SelectedTownDateLimit.Interval.HourBegin), SelectedTownDateLimit);
+                //SelectedMeasuring.Appointed = SelectedDate.AddHours(SelectedTownDateLimit.Interval.HourBegin);
+                //SelectedTownDateLimit.MeasurementsLimit--;
                 OnPropertyChanged("SelectedTownDateLimitsCollection");
                 OnPropertyChanged("TownDateLimitsCollection");
+                OnPropertyChanged("IsCancelCommandEnabled");
+                OnPropertyChanged("IsAddCommandEnabled");
             }
             else
             {
-                MessageBox.Show("Для данного заказа уже назначена дата и время.");
+                if(MessageBox.Show("Для данного заказа уже назначена дата и время. Переназначить?","Внимание", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    SelectedMeasuring.CancelAppoint();
+                    SelectedMeasuring.Appoint(SelectedDate.AddHours(SelectedTownDateLimit.Interval.HourBegin), SelectedTownDateLimit);
+                    OnPropertyChanged("SelectedTownDateLimitsCollection");
+                    OnPropertyChanged("TownDateLimitsCollection");
+                    OnPropertyChanged("IsCancelCommandEnabled");
+                    OnPropertyChanged("IsAddCommandEnabled");
+                }
+            }
+        }));
+
+        private RelayCommand cancelCommand;
+        public RelayCommand CancelCommand => cancelCommand ?? (cancelCommand = new RelayCommand(obj =>
+        {
+            if (SelectedMeasuring.Appointed != null)
+            {
+                SelectedMeasuring.CancelAppoint();
+                OnPropertyChanged("SelectedTownDateLimitsCollection");
+                OnPropertyChanged("TownDateLimitsCollection");
+                OnPropertyChanged("IsCancelCommandEnabled");
+                OnPropertyChanged("IsAddCommandEnabled");
+            }
+            else
+            {
+                MessageBox.Show("Для данного заказа дата и время не назначены", "Внимание");
+                
             }
         }));
 
@@ -77,6 +121,33 @@ namespace MeasurementManagerMVVM.ViewModels
             {
                 _townDateLimitsCollection = value;
                 OnPropertyChanged("TownDateLimitsCollection");
+            }
+        }
+
+        private string _filterText;
+        public string FilterText
+        {
+            get
+            {
+                return _filterText;
+            }
+            set
+            {
+                _filterText = value;
+                if (_filterText == string.Empty)
+                {
+                    CurrentMeasuringRequestsCollection = MeasuringRequestsCollection;
+                }
+                else
+                {
+                    CurrentMeasuringRequestsCollection = new ObservableCollection<MeasuringRequest>
+                        (from mrc in MeasuringRequestsCollection
+                        where mrc.AddressString.Contains(_filterText) || mrc.Fname.Contains(_filterText) || mrc.Lname.Contains(_filterText) ||
+                        mrc.Patronymic.Contains(_filterText) || mrc.Phone.Contains(_filterText)
+                        select mrc);
+                }
+
+                OnPropertyChanged("CurrentMeasuringRequestsCollection");
             }
         }
 
@@ -115,6 +186,7 @@ namespace MeasurementManagerMVVM.ViewModels
         }
 
         public ObservableCollection<MeasuringRequest> MeasuringRequestsCollection { get; set; }
+        public ObservableCollection<MeasuringRequest> CurrentMeasuringRequestsCollection { get; set; }
 
         private DateTime _selectedDate;
         public DateTime SelectedDate
@@ -138,6 +210,8 @@ namespace MeasurementManagerMVVM.ViewModels
                 OnPropertyChanged("SelectedMeasuring"); 
                 OnPropertyChanged("SelectedTownDateLimitsCollection");
                 OnPropertyChanged("IsCalendarEnabled");
+                OnPropertyChanged("IsCancelCommandEnabled");
+                OnPropertyChanged("IsAddCommandEnabled");
             }
         }
     }
